@@ -94,6 +94,12 @@ if (angular.element.prototype.closest === undefined) {
 
 var latestId = 0;
 
+var isIos = 0;
+
+if ( /iphone|ipod|ipad/.test( window.navigator.userAgent.toLowerCase()) ) {
+  isIos = 1;
+}
+
 var uis = angular.module('ui.select', [])
 
 .constant('uiSelectConfig', {
@@ -324,11 +330,10 @@ uis.controller('uiSelectCtrl',
       if ( ctrl.activeIndex === -1 && ctrl.taggingLabel !== false ) {
         ctrl.activeIndex = 0;
       }
-
       // Give it time to appear before focus
       $timeout(function() {
         ctrl.search = initSearchValue || ctrl.search;
-        ctrl.searchInput[0].focus();
+        if ( !isIos ) ctrl.searchInput[0].focus();
       });
     }
   };
@@ -562,7 +567,7 @@ uis.controller('uiSelectCtrl',
     ctrl.select(undefined);
     $event.stopPropagation();
     $timeout(function() {
-      ctrl.focusser[0].focus();
+      if ( !isIos) ctrl.focusser[0].focus();
     }, 0, false);
   };
 
@@ -1546,7 +1551,7 @@ uis.directive('uiSelectSingle', ['$timeout','$compile', function($timeout, $comp
       scope.$on('uis:close', function (event, skipFocusser) {
         $timeout(function(){
           $select.focusser.prop('disabled', false);
-          if (!skipFocusser) $select.focusser[0].focus();
+          if ( !isIos && !skipFocusser ) $select.focusser[0].focus();
         },0,false);
       });
 
